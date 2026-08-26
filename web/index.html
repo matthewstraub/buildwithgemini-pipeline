@@ -3,153 +3,184 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Job Pipeline Agent — Dashboard</title>
-  <meta name="description" content="AI-assisted Job Application Pipeline tracking, recruiter vetting, and follow-up draft generation.">
+  <title>Pipeline — Job Application Intelligence & Cadence Engine</title>
+  <meta name="description" content="Local-first job application tracking, recruiter vetting, and AI draft generation.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <div id="app" class="layout">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-brand">
-        <div class="brand-logo">⚡</div>
-        <div class="brand-text">
-          <h1>Job Pipeline Agent</h1>
-          <span class="badge badge-version">v0.1.0 • Live Board</span>
+  <div id="app" class="app-container">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="brand flex-center">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="brand-info">
+          <span class="brand-title">Pipeline</span>
+          <span class="brand-tag">Agent v0.1</span>
         </div>
       </div>
 
-      <!-- Header Navigation Tabs -->
-      <nav class="nav-tabs">
-        <button id="tab-kanban" class="nav-tab active" onclick="switchTab('kanban')">
-          <span class="tab-icon">📋</span> Board
+      <nav class="nav-switcher">
+        <button id="tab-kanban" class="nav-item active" onclick="switchTab('kanban')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span>Board View</span>
         </button>
-        <button id="tab-vetting" class="nav-tab" onclick="switchTab('vetting')">
-          <span class="tab-icon">🛡️</span> Recruiter Vetting
+        <button id="tab-vetting" class="nav-item" onclick="switchTab('vetting')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Recruiter Vetting</span>
         </button>
-        <button id="tab-reports" class="nav-tab" onclick="switchTab('reports')">
-          <span class="tab-icon">📊</span> Reports & Drafts
+        <button id="tab-reports" class="nav-item" onclick="switchTab('reports')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Reports & Drafts</span>
         </button>
       </nav>
 
       <div class="header-actions">
         <button class="btn btn-primary" onclick="openNewAppModal()">
-          <span>+ Add Application</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>New Application</span>
         </button>
       </div>
     </header>
 
-    <!-- Stats Bar -->
-    <section class="stats-bar">
-      <div class="stat-card">
-        <span class="stat-label">Total Pipeline</span>
-        <span id="stat-total" class="stat-value">0</span>
+    <!-- Executive Metrics Bar -->
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-label">Total Applications</span>
+        <div class="metric-value-row">
+          <span id="stat-total" class="metric-value">0</span>
+          <span class="metric-sub text-muted">Active Pipeline</span>
+        </div>
       </div>
-      <div class="stat-card highlight-attention">
-        <span class="stat-label">Needs Attention Today</span>
-        <span id="stat-attention" class="stat-value warning-pulse">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">In Flight (Screens/Onsites)</span>
-        <span id="stat-inflight" class="stat-value">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Stale / Inactive</span>
-        <span id="stat-stale" class="stat-value text-muted">0</span>
-      </div>
-    </section>
-
-    <!-- Attention Alert Bar -->
-    <div id="attention-alert-bar" class="attention-alert hidden">
-      <div class="alert-icon">⚠️</div>
-      <div class="alert-content">
-        <h4 id="alert-title">Applications Need Follow-up Today</h4>
-        <p id="alert-body">Review calculated business day quiet thresholds and inspect draft messages.</p>
-      </div>
-      <button class="btn btn-sm btn-dark" onclick="switchTab('kanban')">View Items</button>
-    </div>
-
-    <!-- Main Content Views -->
-    <main class="main-content">
-      <!-- 1. KANBAN BOARD VIEW -->
-      <div id="view-kanban" class="view-panel active">
-        <div id="kanban-grid" class="kanban-grid">
-          <!-- Columns dynamically populated by JS -->
+      
+      <div class="metric-card metric-attention">
+        <span class="metric-label">Attention Required</span>
+        <div class="metric-value-row">
+          <span id="stat-attention" class="metric-value text-amber">0</span>
+          <span class="metric-sub text-amber">Cadence Due Today</span>
         </div>
       </div>
 
-      <!-- 2. RECRUITER VETTING SIMULATOR VIEW -->
+      <div class="metric-card">
+        <span class="metric-label">In Active Stage</span>
+        <div class="metric-value-row">
+          <span id="stat-inflight" class="metric-value">0</span>
+          <span class="metric-sub text-muted">Screens & Onsites</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Closed / Stale</span>
+        <div class="metric-value-row">
+          <span id="stat-stale" class="metric-value text-dim">0</span>
+          <span class="metric-sub text-dim">Archived</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Banner for Due Nudges -->
+    <div id="attention-alert-bar" class="action-alert-banner hidden">
+      <div class="alert-inline flex-center">
+        <span class="alert-dot"></span>
+        <span id="alert-title" class="alert-heading">Applications Require Follow-Up Today</span>
+        <span class="alert-divider">•</span>
+        <span id="alert-body" class="alert-desc">Calculated cadence thresholds exceeded based on business day quiet math.</span>
+      </div>
+      <button class="btn btn-xs btn-amber" onclick="switchTab('kanban')">Review Due Items</button>
+    </div>
+
+    <!-- Main Dynamic Content Panel -->
+    <main class="content-body">
+      <!-- 1. KANBAN BOARD VIEW -->
+      <div id="view-kanban" class="view-panel active">
+        <div id="kanban-grid" class="kanban-columns-container">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </div>
+
+      <!-- 2. RECRUITER VETTING VIEW -->
       <div id="view-vetting" class="view-panel hidden">
-        <div class="vetting-container">
-          <div class="glass-card vetting-form-card">
-            <h2>🛡️ Recruiter Vetting Simulator</h2>
-            <p class="section-desc">Paste an inbound recruiter message or forwarded email to verify role legitimacy against corporate web presence and check for scam/impersonation patterns.</p>
-            
+        <div class="vetting-workspace">
+          <!-- Left: Input Form Panel -->
+          <div class="panel-card form-panel">
+            <div class="panel-header">
+              <h2>Recruiter Vetting Engine</h2>
+              <p class="panel-subtitle">Evaluate inbound recruiter outreach to separate genuine opportunities from impersonation fraud, spoofed domains, and check scams.</p>
+            </div>
+
             <form id="vetting-form" onsubmit="handleVettingSubmit(event)">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="vet-sender">Sender Email (optional)</label>
-                  <input type="email" id="vet-sender" placeholder="e.g. recruiter@company.com or gmail.com">
+              <div class="form-grid-2">
+                <div class="input-group">
+                  <label for="vet-sender">Sender Email</label>
+                  <input type="email" id="vet-sender" placeholder="e.g. recruiter@company.com">
                 </div>
-                <div class="form-group">
-                  <label for="vet-replyto">Reply-To Email (optional)</label>
-                  <input type="email" id="vet-replyto" placeholder="e.g. interview-desk@domain.com">
+                <div class="input-group">
+                  <label for="vet-replyto">Reply-To Domain</label>
+                  <input type="email" id="vet-replyto" placeholder="e.g. desk@external-domain.com">
                 </div>
               </div>
-              <div class="form-row">
-                <div class="form-group">
+
+              <div class="form-grid-2">
+                <div class="input-group">
                   <label for="vet-company">Claimed Company</label>
                   <input type="text" id="vet-company" placeholder="e.g. Northwind Labs">
                 </div>
-                <div class="form-group">
-                  <label for="vet-role">Claimed Role</label>
+                <div class="input-group">
+                  <label for="vet-role">Claimed Role Title</label>
                   <input type="text" id="vet-role" placeholder="e.g. Deployment Success Manager">
                 </div>
               </div>
-              <div class="form-group">
-                <label for="vet-message">Message Content / Email Body *</label>
-                <textarea id="vet-message" rows="7" required placeholder="Paste full inbound email body or text message here..."></textarea>
+
+              <div class="input-group">
+                <label for="vet-message">Message Body / Email Content *</label>
+                <textarea id="vet-message" rows="8" required placeholder="Paste complete inbound email body or outreach text..."></textarea>
               </div>
-              <button type="submit" id="btn-vet-submit" class="btn btn-accent full-width">
-                <span>Run Vetting Checks</span>
+
+              <button type="submit" id="btn-vet-submit" class="btn btn-primary full-width">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Evaluate Outreach Risk</span>
               </button>
             </form>
           </div>
 
-          <!-- Vetting Result Card -->
-          <div id="vetting-result-card" class="glass-card vetting-result-card hidden">
-            <div id="verdict-header" class="verdict-header">
-              <span id="verdict-badge" class="verdict-badge">VERDICT</span>
-              <h3 id="verdict-title">Analysis Complete</h3>
-            </div>
-            
-            <div class="verdict-duo">
-              <div id="legit-box" class="duo-box">
-                <span class="duo-title">Role Legitimacy</span>
-                <span id="legit-status" class="duo-val">Evaluating...</span>
+          <!-- Right: Interactive Verdict Panel -->
+          <div id="vetting-result-card" class="panel-card result-panel hidden">
+            <div class="panel-header flex-between">
+              <div>
+                <h2>Vetting Verdict Analysis</h2>
+                <span id="verdict-timestamp" class="mono-meta">Evaluated via Gemini 2.5 Flash</span>
               </div>
-              <div id="safety-box" class="duo-box">
-                <span class="duo-title">Channel Safety</span>
-                <span id="safety-status" class="duo-val">Evaluating...</span>
+              <span id="verdict-badge" class="verdict-tag">VERDICT</span>
+            </div>
+
+            <div class="verdict-metrics-duo">
+              <div class="duo-item">
+                <span class="duo-label">Role Legitimacy</span>
+                <span id="legit-status" class="duo-value">Evaluating...</span>
+              </div>
+              <div class="duo-item">
+                <span class="duo-label">Channel Safety</span>
+                <span id="safety-status" class="duo-value">Evaluating...</span>
               </div>
             </div>
 
-            <div class="signals-section">
-              <h4>Signals Against</h4>
-              <ul id="signals-against-list" class="signals-list signals-against"></ul>
+            <div class="diagnostic-section">
+              <span class="section-title text-rose">Risk Signals Identified</span>
+              <ul id="signals-against-list" class="diagnostic-list list-against"></ul>
             </div>
 
-            <div class="signals-section">
-              <h4>Signals For</h4>
-              <ul id="signals-for-list" class="signals-list signals-for"></ul>
+            <div class="diagnostic-section">
+              <span class="section-title text-emerald">Positive Verification Signals</span>
+              <ul id="signals-for-list" class="diagnostic-list list-for"></ul>
             </div>
 
-            <div class="signals-section">
-              <h4>Recommended Actions</h4>
-              <ul id="actions-list" class="signals-list actions-list"></ul>
+            <div class="diagnostic-section">
+              <span class="section-title text-cyan">Recommended Next Actions</span>
+              <ul id="actions-list" class="diagnostic-list list-actions"></ul>
             </div>
           </div>
         </div>
@@ -157,59 +188,72 @@
 
       <!-- 3. REPORTS & DRAFTS VIEW -->
       <div id="view-reports" class="view-panel hidden">
-        <div class="reports-grid">
-          <div class="glass-card">
-            <h3>📬 Daily Digest Preview</h3>
-            <pre id="digest-preview" class="code-preview">Loading daily digest...</pre>
+        <div class="reports-workspace">
+          <div class="panel-card">
+            <div class="panel-header flex-between">
+              <h2>Daily Digest Feed</h2>
+              <span class="mono-meta">ntfy.sh / CLI Format</span>
+            </div>
+            <pre id="digest-preview" class="code-preview-block">Loading daily digest...</pre>
           </div>
-          <div class="glass-card">
-            <h3>📈 Monday Pipeline Summary</h3>
-            <div id="summary-preview" class="markdown-preview">Loading Monday summary...</div>
+
+          <div class="panel-card">
+            <div class="panel-header flex-between">
+              <h2>Monday Summary Report</h2>
+              <span class="mono-meta">Executive Overview</span>
+            </div>
+            <div id="summary-preview" class="markdown-preview-block">Loading Monday summary...</div>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- Modal for Draft Previewer -->
-    <div id="draft-modal" class="modal-backdrop hidden">
-      <div class="modal-content glass-card">
+    <!-- Modal: Follow-Up Draft Editor -->
+    <div id="draft-modal" class="modal-overlay hidden">
+      <div class="modal-card">
         <div class="modal-header">
-          <h3 id="draft-modal-title">Follow-up Draft Preview</h3>
-          <button class="modal-close" onclick="closeDraftModal()">✕</button>
+          <div>
+            <h3 id="draft-modal-title">Follow-Up Email Draft</h3>
+            <span class="modal-subtitle">Generated by Gemini 2.5 Flash • Never Auto-Sent</span>
+          </div>
+          <button class="modal-close-btn" onclick="closeDraftModal()">✕</button>
         </div>
         <div class="modal-body">
-          <textarea id="draft-editor" rows="12" class="code-editor"></textarea>
+          <textarea id="draft-editor" rows="12" class="mono-textarea" spellcheck="false"></textarea>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" onclick="closeDraftModal()">Close</button>
-          <button class="btn btn-accent" onclick="copyDraftToClipboard()">📋 Copy Draft</button>
+          <button class="btn btn-secondary" onclick="closeDraftModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="copyDraftToClipboard()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Copy Draft to Clipboard</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Modal for Add New Application -->
-    <div id="new-app-modal" class="modal-backdrop hidden">
-      <div class="modal-content glass-card">
+    <!-- Modal: Create Application -->
+    <div id="new-app-modal" class="modal-overlay hidden">
+      <div class="modal-card">
         <div class="modal-header">
-          <h3>Add New Application</h3>
-          <button class="modal-close" onclick="closeNewAppModal()">✕</button>
+          <h3>Create Application Record</h3>
+          <button class="modal-close-btn" onclick="closeNewAppModal()">✕</button>
         </div>
         <form onsubmit="handleNewAppSubmit(event)">
-          <div class="modal-body form-grid">
-            <div class="form-group">
-              <label for="new-company">Company *</label>
+          <div class="modal-body form-grid-2">
+            <div class="input-group">
+              <label for="new-company">Company Name *</label>
               <input type="text" id="new-company" required placeholder="e.g. Northwind Labs">
             </div>
-            <div class="form-group">
+            <div class="input-group">
               <label for="new-role">Role Title *</label>
               <input type="text" id="new-role" required placeholder="e.g. Solutions Consultant">
             </div>
-            <div class="form-group">
-              <label for="new-url">Posting URL</label>
+            <div class="input-group">
+              <label for="new-url">Job Posting URL</label>
               <input type="url" id="new-url" placeholder="https://company.com/careers">
             </div>
-            <div class="form-group">
-              <label for="new-source">Source</label>
+            <div class="input-group">
+              <label for="new-source">Source Channel</label>
               <select id="new-source">
                 <option value="cold">Cold Application</option>
                 <option value="warm_intro">Warm Intro</option>
@@ -217,7 +261,7 @@
                 <option value="referral">Referral</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="input-group">
               <label for="new-location">Location Type</label>
               <select id="new-location">
                 <option value="remote">Remote</option>
@@ -226,8 +270,8 @@
                 <option value="onsite">Onsite</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="new-stage">Stage</label>
+            <div class="input-group">
+              <label for="new-stage">Initial Stage</label>
               <select id="new-stage">
                 <option value="researching">Researching</option>
                 <option value="applied" selected>Applied</option>
@@ -241,7 +285,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" onclick="closeNewAppModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save Application</button>
+            <button type="submit" class="btn btn-primary">Create Record</button>
           </div>
         </form>
       </div>

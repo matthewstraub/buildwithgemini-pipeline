@@ -1,16 +1,16 @@
 /**
- * Job Pipeline Agent — Web Dashboard Client Application Logic
+ * Job Pipeline Agent — Professional Web Dashboard Client Application Logic
  */
 
 const STAGES = [
-  { id: "applied", label: "Applied", color: "#3b82f6" },
-  { id: "screen_scheduled", label: "Screen Scheduled", color: "#f59e0b" },
-  { id: "screen_done", label: "Screen Done", color: "#8b5cf6" },
-  { id: "onsite_scheduled", label: "Onsite Scheduled", color: "#ec4899" },
+  { id: "applied", label: "Applied", color: "#38bdf8" },
+  { id: "screen_scheduled", label: "Screen Scheduled", color: "#fbbf24" },
+  { id: "screen_done", label: "Screen Done", color: "#c084fc" },
+  { id: "onsite_scheduled", label: "Onsite Scheduled", color: "#f472b6" },
   { id: "onsite_done", label: "Onsite Done", color: "#a855f7" },
-  { id: "offer", label: "Offer", color: "#10b981" },
-  { id: "rejected", label: "Rejected", color: "#ef4444" },
-  { id: "stale", label: "Stale", color: "#6b7280" }
+  { id: "offer", label: "Offer", color: "#34d399" },
+  { id: "rejected", label: "Rejected", color: "#f87171" },
+  { id: "stale", label: "Stale", color: "#64748b" }
 ];
 
 let globalApplications = [];
@@ -21,8 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function switchTab(tabName) {
-  document.querySelectorAll(".nav-tab").forEach(tab => tab.classList.remove("active"));
-  document.querySelectorAll(".view-panel").forEach(view => view.classList.add("hidden"));
+  document.querySelectorAll(".nav-item").forEach(tab => tab.classList.remove("active"));
+  document.querySelectorAll(".view-panel").forEach(view => {
+    view.classList.add("hidden");
+    view.classList.remove("active");
+  });
 
   const targetTab = document.getElementById(`tab-${tabName}`);
   const targetView = document.getElementById(`view-${tabName}`);
@@ -63,7 +66,7 @@ function renderStats(apps) {
   const alertBar = document.getElementById("attention-alert-bar");
   if (attentionCount > 0) {
     alertBar.classList.remove("hidden");
-    document.getElementById("alert-title").innerText = `${attentionCount} Application${attentionCount > 1 ? 's' : ''} Need Attention Today`;
+    document.getElementById("alert-title").innerText = `${attentionCount} Application${attentionCount > 1 ? 's' : ''} Require Follow-Up Today`;
   } else {
     alertBar.classList.add("hidden");
   }
@@ -107,9 +110,9 @@ function createApplicationCard(app) {
   let actionHtml = "";
   if (app.needs_attention) {
     actionHtml = `
-      <div class="action-banner">
+      <div class="action-inline-bar">
         <span>⚠️ ${app.next_action}</span>
-        <button class="btn btn-sm btn-dark" onclick="openDraftModal('${app.slug}', '${app.company}')">Draft</button>
+        <button class="btn btn-xs btn-amber" onclick="openDraftModal('${app.slug}', '${app.company}')">Draft</button>
       </div>
     `;
   } else if (app.next_action) {
@@ -117,20 +120,16 @@ function createApplicationCard(app) {
   }
 
   card.innerHTML = `
-    <div class="card-top">
-      <div>
-        ${companyUrl}
-        <div class="card-role">${app.role}</div>
-      </div>
+    <div>
+      ${companyUrl}
+      <div class="card-role">${app.role}</div>
     </div>
-    <div class="card-meta">
+    <div class="card-meta-row">
       <span class="badge badge-${app.location_type || 'remote'}">${app.location_type || 'remote'}</span>
       <span class="badge badge-source">${app.source}</span>
     </div>
     ${actionHtml}
-    <div class="card-footer">
-      <span class="quiet-tag">Quiet: ${app.quiet_bd} business days</span>
-    </div>
+    <div class="quiet-tag">Quiet: ${app.quiet_bd} business days</div>
   `;
   return card;
 }
@@ -161,7 +160,7 @@ async function handleVettingSubmit(e) {
     alert("Vetting analysis failed: " + err);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = "<span>Run Vetting Checks</span>";
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Evaluate Outreach Risk</span>`;
   }
 }
 
@@ -171,7 +170,7 @@ function renderVettingResult(res) {
 
   const badge = document.getElementById("verdict-badge");
   badge.innerText = res.verdict.toUpperCase().replace("_", " ");
-  badge.className = "verdict-badge";
+  badge.className = "verdict-tag";
 
   if (res.verdict === "likely_fraudulent") {
     badge.classList.add("verdict-fraudulent");
@@ -196,9 +195,9 @@ function renderVettingResult(res) {
 
 async function openDraftModal(slug, companyName) {
   currentDraftSlug = slug;
-  document.getElementById("draft-modal-title").innerText = `Follow-up Draft: ${companyName}`;
+  document.getElementById("draft-modal-title").innerText = `Follow-Up Email Draft — ${companyName}`;
   const editor = document.getElementById("draft-editor");
-  editor.value = "Loading draft...";
+  editor.value = "Generating draft via Gemini 2.5 Flash...";
   document.getElementById("draft-modal").classList.remove("hidden");
 
   try {
