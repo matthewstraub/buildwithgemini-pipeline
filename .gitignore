@@ -1,0 +1,55 @@
+# Environment & API keys
+.env
+.env.local
+
+# Application state (Ignore real user applications; keep repo private/clean)
+state/applications/*.yaml
+!state/applications/.gitkeep
+
+# Output drafts & thread context
+out/drafts/*
+!out/drafts/.gitkeep
+threads/*
+!threads/.gitkeep
+
+# Python build & bytecode artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo

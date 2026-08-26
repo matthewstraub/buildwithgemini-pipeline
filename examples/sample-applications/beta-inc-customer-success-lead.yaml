@@ -1,0 +1,22 @@
+company: Beta Inc
+role: Customer Success Lead
+url: https://example.com/beta/careers
+applied_on: 2026-08-05
+source: cold
+stage: screen_done
+stage_changed_on: 2026-08-16
+location_type: remote
+comp_discussed: $175k
+contacts:
+  - name: Sam Smith
+    role: recruiter
+    channel: email
+    handle: sam@beta.com
+last_contact:
+  direction: inbound
+  date: 2026-08-16
+  summary: Recruiter screen completed with Sam
+next_action: null
+nudge_count: 0
+notes: |
+  Recruiter screen completed. Awaiting hiring manager review.

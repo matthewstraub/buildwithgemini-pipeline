@@ -1,0 +1,23 @@
+company: Acme Corp
+role: Senior Solutions Architect
+url: https://example.com/acme/careers
+applied_on: 2026-08-10
+source: warm_intro
+referrer: Jane Doe
+stage: applied
+stage_changed_on: 2026-08-10
+location_type: remote
+comp_discussed: $180k - $200k
+contacts:
+  - name: Jane Doe
+    role: referrer
+    channel: linkedin
+    handle: jane-doe
+last_contact:
+  direction: outbound
+  date: 2026-08-10
+  summary: Internal warm intro submitted by Jane
+next_action: null
+nudge_count: 0
+notes: |
+  Sample application record for Acme Corp. Warm referral via Jane.

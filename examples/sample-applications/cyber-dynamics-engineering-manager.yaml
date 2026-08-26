@@ -1,0 +1,23 @@
+company: Cyber Dynamics
+role: Engineering Manager
+url: https://example.com/cyber/careers
+applied_on: 2026-08-18
+source: referral
+referrer: Alex Rivers
+stage: screen_scheduled
+stage_changed_on: 2026-08-22
+location_type: sf_hybrid
+comp_discussed: $210k - $240k
+contacts:
+  - name: Alex Rivers
+    role: referrer
+    channel: slack
+    handle: alex
+last_contact:
+  direction: inbound
+  date: 2026-08-22
+  summary: Phone screen scheduled for late August
+next_action: null
+nudge_count: 0
+notes: |
+  Referred by Alex. Phone screen scheduled.
